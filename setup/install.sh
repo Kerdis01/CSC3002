@@ -28,9 +28,11 @@ eval "$(conda shell.bash hook)"
 conda activate tflite_env
 
 # Step 3: Install Python dependencies
+sudo apt-get update
 pip install -e .
 pip install tflite-runtime
 pip install opencv-python
+pip install opencv-python-headless
 
 # Step 4: Verify everything is installed correctly
 # (Add any commands for verification if necessary)

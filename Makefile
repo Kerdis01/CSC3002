@@ -12,6 +12,7 @@ setup_conda:
 	@echo "Setting up the conda environment..."
 	@chmod +x setup/install.sh
 	@./setup/install.sh
+	@conda init
 	@conda activate tflite_env
 
 # # Target to install Python dependencies using setup.py.
@@ -24,7 +25,6 @@ help:
 	@echo "Available make targets:"
 	@echo "  install            : Set up the conda environment and install Python dependencies."
 	@echo "  setup_conda        : Only set up the conda environment using the install.sh script."
-	@echo "  install_python_deps: Only install Python dependencies using setup.py."
 	@echo "  help               : Show available targets."
 
-.PHONY: default install setup_conda install_python_deps help
+.PHONY: default install setup_conda help
