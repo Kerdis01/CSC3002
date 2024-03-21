@@ -30,7 +30,8 @@ conda activate tflite_env
 # Step 3: Install Python dependencies
 sudo apt-get update
 pip install -e .
-pip install tflite-runtime
+pip install tensorflow==2.3.0
+pip install tflite==2.2.0
 pip install opencv-python
 pip install opencv-python-headless
 
