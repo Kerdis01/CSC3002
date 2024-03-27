@@ -55,7 +55,9 @@ source yolov8_env/bin/activate
 ### Step 2: Build YOLOv8
 Prepare the YOLOv8 environment:
 ```bash
-make
+python3 -m pip install --upgrade pip
+python3 -m pip --version
+pip install ultralytics
 ```
 ### Step 3: Start Object Detection
 Run the libcamera command and initiate the detection script:
