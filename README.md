@@ -1,2 +1,2 @@
 # CSC3002
-Raspberry Pi Pedestrian Detector Project
+Raspberry Pi Object Detector Project
