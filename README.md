@@ -4,6 +4,7 @@ Raspberry Pi Object Detector Project
 For tflite, run:
 
 ################
+
 For yolov5, run:
 
 cd yolov5
@@ -19,6 +20,7 @@ libcamera-vid -n -t 0 --width 1280 --height 960 --framerate 1 --inline --listen 
 python detect.py
 
 ###############
+
 For yolov8, run:
 
 cd yolov8
