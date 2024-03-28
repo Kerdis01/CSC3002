@@ -2,8 +2,6 @@
 import subprocess
 import psutil
 import time
-import csv
-from threading import Thread
 
 def get_cpu_usage():
     """Returns the current CPU usage as a percentage."""
@@ -37,15 +35,3 @@ def log_system_metrics_to_csv(start_time, frame_counter, csv_writer):
     print(f"Frame: {frame_counter}, CPU Usage: {cpu_usage}%, CPU Temperature: {cpu_temp}�C, Core Voltage: {core_voltage}V")
     # Write the metrics to the CSV file
     csv_writer.writerow([frame_counter, elapsed_time, cpu_usage, cpu_temp, core_voltage])
-
-# Example usage:
-# with open('power_metrics.csv', 'w', newline='') as csvfile:
-#     csv_writer = csv.writer(csvfile)
-#     csv_writer.writerow(["Frame", "Elapsed Time (s)", "CPU Usage (%)", "CPU Temperature (�C)", "Core Voltage (V)"])
-#     start_time = time.time()
-#     frame_counter = 0
-#     while your_condition_here:
-#         # Increment your frame counter as appropriate in your main script
-#         log_system_metrics_to_csv(start_time, frame_counter, csv_writer)
-#         frame_counter += 1
-#         # Your frame processing logic here
