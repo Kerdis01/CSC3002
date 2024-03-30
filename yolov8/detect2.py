@@ -9,6 +9,9 @@ import resource_monitor  # Make sure this module exists and is correctly impleme
 results_dir = 'results'
 os.makedirs(results_dir, exist_ok=True)
 
+# Select YOLO Model
+model_name = 'yolov8n.pt'
+
 # Adjust the CSV file path to be within the results directory
 csv_file_path = os.path.join(results_dir, 'detection_metrics.csv')
 
@@ -36,12 +39,15 @@ with open(csv_file_path, 'w', newline='') as csvfile:
     csv_writer.writerow(["Frame", "CPU Usage (%)", "CPU Temperature (C)", "Core Voltage (V)", "Detection Summary", "Detection Pre-process Speed (ms)", "Detection Inference Speed (ms)", "Detection Post Process Speed (ms)"])
 
     # Load the YOLOv8 model
-    model = YOLO('yolov8n.pt')
+    model = YOLO(model_name)
+    model.fuse()
     stream_url = 'tcp://127.0.0.1:8888'
 
-    results = model(stream_url, stream=True, save=True)
+    # Use source=0 for a USB webcam
+    results = model.track(source=stream_url, stream=True, conf=0.5, tracker="bytetrack.yaml")
     frame_counter = 0  # Initialize frame counter
 
+    #IMPORTANT: ADD ACCURACY
     for result in results:
         frame_counter += 1
 
