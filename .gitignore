@@ -1,3 +1,4 @@
 __pycache__/
 yolov8_env/
-yolov8/results/detection_metrics.csv
+yolov8/results/
+credentials.py
