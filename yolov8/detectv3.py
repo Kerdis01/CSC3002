@@ -54,7 +54,7 @@ with open(csv_file_path, 'w', newline='') as csvfile:
     csv_writer = csv.writer(csvfile)
     # Write CSV header
     csv_writer.writerow(["Frame", "CPU Usage (%)", "CPU Temperature (C)", "Core Voltage (V)", "Detection Summary",
-                        "Detection Pre-process Speed (ms)", "Detection Inference Speed (ms)", "Detection Post Process Speed (ms)", "Precision", "Recall", "F1 Score"])
+                        "Detection Pre-process Speed (ms)", "Detection Inference Speed (ms)", "Detection Post Process Speed (ms)"])
     # Use source=0 for a USB webcam
     results = model.track(source=stream_url, stream=True,
                           conf=0.5, iou=0.7, tracker="bytetrack.yaml", show=True)
