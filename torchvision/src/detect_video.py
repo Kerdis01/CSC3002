@@ -34,8 +34,9 @@ csv_file_path = os.path.join(results_dir, f'{run_title}.csv')
 # Prepare CSV file for logging
 with open(csv_file_path, mode='w', newline='') as csvfile:
     csv_writer = csv.writer(csvfile)
-    csv_writer.writerow(["Frame", "Inference Time (ms)", "Confidence Scores",
-                        "CPU Usage (%)", "CPU Temperature (C)", "Core Voltage (V)" "Avg FPS"])
+    csv_writer.writerow(["Frame", "CPU Usage (%)", "CPU Temperature (C)", 
+                         "Core Voltage (V)", "Detection Summary", "Inference Time (ms)", "Confidence Scores",
+                         "Avg FPS"])
 
 # Camera stream settings and launch command
 stream_url = 'tcp://127.0.0.1:8888'
@@ -59,6 +60,7 @@ with open(csv_file_path, mode='a', newline='') as csvfile:
 
     frame_count = 0
     total_fps = 0
+    should_exit = False
 
     try:
         while cap.isOpened():
@@ -71,9 +73,6 @@ with open(csv_file_path, mode='a', newline='') as csvfile:
                     start_time = time.time()
                     boxes, classes, labels, scores = predict(
                         frame, model, device, args['threshold'])
-                    # Inference time in milliseconds
-                    inference_time = (time.time() - start_time) * 1000
-
                 # Draw bounding boxes and labels on the frame
                 image = draw_boxes(boxes, classes, labels, scores, frame)
 
@@ -82,20 +81,27 @@ with open(csv_file_path, mode='a', newline='') as csvfile:
                 fps = 1 / (end_time - frame_start_time)
                 total_fps += fps
                 frame_count += 1
+                if frame_count >= 100:
+                    should_exit = True
 
                 # System metrics
                 cpu_usage = resource_monitor.get_cpu_usage()
                 cpu_temp = resource_monitor.get_cpu_temperature()
                 cpu_voltage = resource_monitor.get_core_voltage()
+                inference_time = f"{((time.time() - start_time) * 1000):.2f}" # (ms)
+                detection_summary = f"Objects Detected: {len(classes)}, "+str(classes)
+                confidence_scores = ", ".join([f"{score:.2f}" for score in scores])
+                fps = f"{fps:.2f}"
 
                 # Log data to CSV
                 csv_writer.writerow(
-                    [frame_count, inference_time, str(scores), cpu_usage, cpu_temp, cpu_voltage, fps])
+                    [frame_count, cpu_usage, cpu_temp, cpu_voltage, detection_summary, inference_time, confidence_scores, fps])
+                csvfile.flush()
 
                 # Display the frame
                 cv2.imshow('Video Stream', image)
 
-                if cv2.waitKey(1) & 0xFF == ord('q'):
+                if cv2.waitKey(1) & 0xFF == ord('q') or should_exit:
                     break
             else:
                 break
