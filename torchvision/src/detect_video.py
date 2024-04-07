@@ -6,8 +6,6 @@ import os
 from datetime import datetime
 import csv
 import subprocess
-import numpy as np
-# Make sure these functions support the required functionality
 from detect_utils import predict, draw_boxes
 from model import get_model
 import resource_monitor
