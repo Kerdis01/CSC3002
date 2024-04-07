@@ -4,11 +4,12 @@ import time
 import os
 from datetime import datetime
 from upload_to_s3 import upload_to_s3
-import resource_monitor
-from ultralytics import YOLO 
+import resource_monitor as resource_monitor
+from ultralytics import YOLO
 
 # Model Settings
-model_name = 'yolov8n.pt'
+model_name = 'quantised_yolov8n.pt'
+model_path = 'models'
 
 # CSV and AWS Settings
 run_title = datetime.now().strftime('Run_%H%M%S_%d%m%Y_') + model_name
@@ -36,7 +37,7 @@ camera_process = subprocess.Popen(camera_command)
 time.sleep(5)  # Wait for the camera to be ready
 
 # Load the YOLOv8 model
-model = YOLO(model_name)
+model = YOLO(os.path.join(model_path, model_name))
 model.fuse()
 
 # Prepare CSV file for logging
