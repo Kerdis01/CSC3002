@@ -3,8 +3,8 @@ import subprocess
 import time
 import os
 from datetime import datetime
-from .upload_to_s3 import upload_to_s3
-from .resource_monitor import get_core_voltage, get_cpu_temperature, get_cpu_usage
+from upload_to_s3 import upload_to_s3
+from resource_monitor import get_core_voltage, get_cpu_temperature, get_cpu_usage
 from ultralytics import YOLO
 
 def run_detection(model_name, model_path, stream_url):
