@@ -1,39 +1,35 @@
-from src.coco_names import COCO_INSTANCE_CATEGORY_NAMES as coco_names
-from src.model import get_model
-from src.detect_utils import draw_boxes, predict, COLORS
 import unittest
-from unittest.mock import patch
-import torch
+from unittest.mock import patch, MagicMock
 import os
-import cv2
+from src.detectv3 import run_detection
 
 TEST_IMAGES_DIR = os.path.join(os.path.dirname(__file__), 'test_images')
 
-class TestModel(unittest.TestCase):
-    def test_get_model(self):
-        with patch('src.model.ssdlite320_mobilenet_v3_large'):
-            device = torch.device('cpu')
-            model = get_model(device)
-            self.assertTrue(hasattr(model, 'eval'))
+class TestModelInference(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.test_image_path = os.path.join(TEST_IMAGES_DIR, 'dog_bike_car.jpg')
+        cls.model_name = 'quantised_yolov8n.pt'
+        cls.model_path = 'models'
 
-class TestDetectUtils(unittest.TestCase):
-    def setUp(self):
-        self.device = torch.device('cpu')
-        self.model = get_model(self.device)
-        self.model.eval()  # Set the model to evaluation mode
-        self.image_path = os.path.join(TEST_IMAGES_DIR, 'dog_bike_car.jpg')
-        self.image = cv2.imread(self.image_path)
-        self.detection_threshold = 0.5
+    @patch('src.detectv3.YOLO')
+    def test_inference_on_image(self, mock_yolo):
+        mock_model_instance = mock_yolo.return_value
+        mock_inference_result = MagicMock()
+        mock_inference_result.boxes = [[10, 10, 20, 20]]
+        mock_inference_result.speed = {'inference': 100}
+        mock_model_instance.track.return_value = [mock_inference_result]
 
-    def test_draw_boxes(self):
-        # Convert the image to the RGB format
-        rgb_image = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
-        boxes, classes, labels, scores = predict(rgb_image, self.model, self.device, self.detection_threshold)
-        drawn_image = draw_boxes(boxes, classes, labels, scores, rgb_image)
-        drawn_image_bgr = cv2.cvtColor(drawn_image, cv2.COLOR_RGB2BGR)
-        # Check that at least one box is drawn
-        self.assertGreater(len(boxes), 0, "No boxes drawn on the image")
-        cv2.imwrite(os.path.join(TEST_IMAGES_DIR, 'output.jpg'), drawn_image_bgr)
+        run_detection(self.model_name, self.model_path, self.test_image_path)
+
+        mock_model_instance.track.assert_called_once_with(
+            source=self.test_image_path, 
+            stream=True, 
+            conf=0.5, 
+            iou=0.7, 
+            tracker="bytetrack.yaml", 
+            show=True
+        )
 
 if __name__ == '__main__':
     unittest.main()

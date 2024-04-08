@@ -11,41 +11,37 @@ from model import get_model
 import resource_monitor
 from upload_to_s3 import upload_to_s3
 
-# Construct the argument parser
 parser = argparse.ArgumentParser()
 parser.add_argument('-t', '--threshold', default=0.5,
                     type=float, help='detection threshold')
 args = vars(parser.parse_args())
 
-# Define the computation device
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cpu')
 model = get_model(device)
 
 # CSV and AWS Settings
-model_name = 'ssdlite320_mobilenet_v3_large'  # Change to your actual model name
+model_name = 'ssdlite320_mobilenet_v3_large'
 run_title = datetime.now().strftime('Run_%H%M%S_%d%m%Y_') + model_name
 s3_bucket_name = 'detect-csv-results'
 results_dir = 'results'
 os.makedirs(results_dir, exist_ok=True)
 csv_file_path = os.path.join(results_dir, f'{run_title}.csv')
 
-# Prepare CSV file for logging
 with open(csv_file_path, mode='w', newline='') as csvfile:
     csv_writer = csv.writer(csvfile)
     csv_writer.writerow(["Frame", "CPU Usage (%)", "CPU Temperature (C)", 
                          "Core Voltage (V)", "Detection Summary", "Inference Time (ms)", "Confidence Scores",
                          "Avg FPS"])
 
-# Camera stream settings and launch command
+# Camera stream settings
 stream_url = 'tcp://127.0.0.1:8888'
 camera_command = [
     'libcamera-vid', '-n', '-t', '0', '--width', '800', '--height', '640', '--framerate', '5', '--inline', '--listen', '-o', stream_url
 ]
 camera_process = subprocess.Popen(camera_command)
 print("Starting camera stream...")
-time.sleep(5)  # Wait for the camera to be ready
+time.sleep(5)
 
-# Open the CSV file again for appending data
 with open(csv_file_path, mode='a', newline='') as csvfile:
     csv_writer = csv.writer(csvfile)
 
