@@ -26,12 +26,10 @@ class TestDetectUtils(unittest.TestCase):
         self.detection_threshold = 0.5
 
     def test_draw_boxes(self):
-        # Convert the image to the RGB format
         rgb_image = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
         boxes, classes, labels, scores = predict(rgb_image, self.model, self.device, self.detection_threshold)
         drawn_image = draw_boxes(boxes, classes, labels, scores, rgb_image)
         drawn_image_bgr = cv2.cvtColor(drawn_image, cv2.COLOR_RGB2BGR)
-        # Check that at least one box is drawn
         self.assertGreater(len(boxes), 0, "No boxes drawn on the image")
         cv2.imwrite(os.path.join(TEST_IMAGES_DIR, 'output.jpg'), drawn_image_bgr)
 
