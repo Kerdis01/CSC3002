@@ -75,7 +75,7 @@ def run_detection(model_name, model_path, stream_url):
             csv_writer.writerow([frame_counter, cpu_usage, cpu_temp, core_voltage,
                              detection_summary, f"{inference_speed:.2f}", confidence_scores, f"{avg_fps:.2f}"])
 
-            if frame_counter > 10:  # Stop after 100 frames
+            if frame_counter > 100:  # Stop after 100 frames
                 break
 
     # Upload the CSV file to AWS S3 and clean up
