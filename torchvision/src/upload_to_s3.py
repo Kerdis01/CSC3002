@@ -1,4 +1,4 @@
-from .credentials import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+from credentials import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 import os
 import boto3
 

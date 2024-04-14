@@ -38,13 +38,13 @@ def run_detection(model_name, model_path, stream_url):
 
     # Load the YOLOv8 model
     model = YOLO(os.path.join(model_path, model_name))
-    model.fuse()
+    # model.fuse()
 
     # Prepare CSV file for logging
     with open(csv_file_path, 'w', newline='') as csvfile:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow(["Frame", "CPU Usage (%)", "CPU Temperature (C)", "Core Voltage (V)",
-                             "Detection Summary", "Detection Inference Speed (ms)", "Average FPS"])
+                             "Detection Summary", "Detection Inference Speed (ms)", "Confidence Scores", "Average FPS"])
 
         results = model.track(source=stream_url, stream=True,
                               conf=0.5, iou=0.7, tracker="bytetrack.yaml", show=True)
@@ -62,15 +62,20 @@ def run_detection(model_name, model_path, stream_url):
             cpu_usage = get_cpu_usage()
             cpu_temp = get_cpu_temperature()
             core_voltage = get_core_voltage()
-            detection_summary = f"Objects Detected: {len(result.boxes)}"
+            boxes = result.boxes
+            class_indices = boxes.cls
+            class_names = [result.names[int(cls)] for cls in class_indices]
+            detection_summary = f"Objects Detected: {len(result.boxes)}, "+ str(class_names)
             inference_speed = result.speed['inference']
+            confidence_scores = result.boxes.conf
+            confidence_scores = str(confidence_scores).replace("tensor(", "").replace(")", "")
             avg_fps = frame_counter / elapsed_time if elapsed_time > 0 else 0
 
             # Write data to CSV, including the formatted Average FPS
             csv_writer.writerow([frame_counter, cpu_usage, cpu_temp, core_voltage,
-                             detection_summary, f"{inference_speed:.2f}", f"{avg_fps:.2f}"])
+                             detection_summary, f"{inference_speed:.2f}", confidence_scores, f"{avg_fps:.2f}"])
 
-            if frame_counter > 100:  # Stop after 100 frames
+            if frame_counter > 10:  # Stop after 100 frames
                 break
 
     # Upload the CSV file to AWS S3 and clean up
@@ -78,7 +83,9 @@ def run_detection(model_name, model_path, stream_url):
     camera_process.terminate()
 
 if __name__ == "__main__":
-    model_name = 'quantised_yolov8n.pt'
+    # model_name = 'quantised_yolov8n.pt'
+    model_name = 'yolov8n.pt'
+    # model_name = 'yolov5s.pt'
     model_path = 'models'
     stream_url = 'tcp://127.0.0.1:8888'
     run_detection(model_name, model_path, stream_url)
