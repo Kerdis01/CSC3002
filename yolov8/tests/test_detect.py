@@ -16,7 +16,10 @@ class TestModelInference(unittest.TestCase):
     def test_inference_on_image(self, mock_yolo):
         mock_model_instance = mock_yolo.return_value
         mock_inference_result = MagicMock()
-        mock_inference_result.boxes = [[10, 10, 20, 20]]
+        mock_inference_result.boxes = MagicMock()
+        mock_inference_result.boxes.xyxy = [[10, 10, 20, 20]]
+        mock_inference_result.boxes.conf = [0.9]
+        mock_inference_result.boxes.cls = [1]
         mock_inference_result.speed = {'inference': 100}
         mock_model_instance.track.return_value = [mock_inference_result]
 
