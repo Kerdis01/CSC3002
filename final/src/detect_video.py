@@ -52,7 +52,7 @@ def run_detection(model_name, model_path, stream_url, conf, iou, width, height):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run object detection using a YOLOv8 model on a video stream.")
-    parser.add_argument("--model_name", type=str, default="quantised_yolov8n.pt", help="Name of the YOLOv8 model file. Default: 'quantised_yolov8n.pt'.")
+    parser.add_argument("--model_name", type=str, default="yolov8n.pt", help="Name of the YOLOv8 model file. Default: 'quantised_yolov8n.pt'.")
     parser.add_argument("--model_path", type=str, default="models", help="Directory path where the model file is stored. Default: 'models'.")
     parser.add_argument("--stream_url", type=str, default="tcp://127.0.0.1:8888", help="URL or path for the video stream or file. Default: 'tcp://127.0.0.1:8888'.")
     parser.add_argument("--conf", type=float, default=0.5, help="Confidence threshold for detections. Default: 0.5.")
