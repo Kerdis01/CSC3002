@@ -71,7 +71,7 @@ def run_detection(model_name, model_path, stream_url):
             confidence_scores = str(confidence_scores).replace("tensor(", "").replace(")", "")
             avg_fps = frame_counter / elapsed_time if elapsed_time > 0 else 0
 
-            # Write data to CSV, including the formatted Average FPS
+            # Write data to csv
             csv_writer.writerow([frame_counter, cpu_usage, cpu_temp, core_voltage,
                              detection_summary, f"{inference_speed:.2f}", confidence_scores, f"{avg_fps:.2f}"])
 
