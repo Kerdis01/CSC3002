@@ -1,5 +1,10 @@
 # CSC3002 - Raspberry Pi Object Detector Project
 
+Setup the Raspberry Pi for use with the official documentation:
+
+1. https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up/1
+2. https://projects.raspberrypi.org/en/projects/getting-started-with-picamera/2
+
 Install Requirements for **"Final"** System
 
 1. Clone the repository to your desired destination.
